@@ -1,7 +1,7 @@
 <template>
   <div class="task-list-container">
     <div class="task-list-header">
-      <h1 class="task-list-title">Task Management</h1>
+      <h1 class="task-list-title">Task Management App</h1>
       <button class="btn create-btn" @click="showCreateForm = true" v-if="!showCreateForm && !showEditForm">
         Create New Task
       </button>
@@ -172,7 +172,9 @@ const changePage = (page) => {
 const createTask = async (task) => {
   loading.value = true;
   try {
-    await axios.post(`${apiBaseUrl}/tasks`, task);
+    await axios.post(`${apiBaseUrl}/tasks`, task,
+    );
+    
     showCreateForm.value = false;
     fetchTasks();
   } catch (err) {
@@ -248,8 +250,6 @@ const deleteTask = async () => {
 onMounted(() => {
   fetchTasks();
 });
-
-// Watch for filter changes
 watch(currentFilter, () => {
   fetchTasks();
 });

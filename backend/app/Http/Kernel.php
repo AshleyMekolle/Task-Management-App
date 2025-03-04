@@ -13,6 +13,6 @@ protected $middlewareGroups = [
     'api' => [
         \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        \Illuminate\Routing\Middleware\HandleCors::class, // Ensure this is present
+        \Illuminate\Routing\Middleware\HandleCors::class, 
     ],
 ];

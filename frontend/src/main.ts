@@ -1,47 +1,49 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import axios from 'axios';
+import type { App as VueApp, Ref } from 'vue';
 
-// Create the Vue app
-const app = createApp(App);
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $axios: typeof axios;
+  }
+}
 
-// Set the base URL for Axios
-axios.defaults.baseURL = 'http://127.0.0.1:8000';
+const app: VueApp = createApp(App);
 
-// Enable credentials for Axios (important for Laravel APIs)
-axios.defaults.withCredentials = true;
+// Configure Axios
+axios.defaults.baseURL = 'http://127.0.0.1:8000/api'; 
+axios.defaults.withCredentials = true; 
+axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 
-// Fetch the CSRF token from Laravel
-const fetchCsrfToken = async () => {
-    try {
-        const response = await axios.get('/csrf-token');
-        const csrfToken = response.data.csrf_token;
-        axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
-    } catch (error) {
-        console.error('Failed to fetch CSRF token:', error);
-    }
+const getCsrfToken = async (): Promise<string | null> => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/csrf-token');
+    return response.data; 
+  } catch (error) {
+    console.error('Error fetching CSRF token:', error);
+    return null;
+  }
 };
 
-// Fetch the CSRF token when the app loads
-fetchCsrfToken();
+const csrfToken: Ref<string | null> = ref(null);
 
-// Axios interceptor to handle CSRF token expiration
-axios.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        if (error.response.status === 419) {
-            // CSRF token expired, fetch a new one and retry the request
-            await fetchCsrfToken();
-            const config = error.config;
-            config.headers['X-CSRF-TOKEN'] = axios.defaults.headers.common['X-CSRF-TOKEN'];
-            return axios.request(config);
-        }
-        return Promise.reject(error);
+const initializeCsrfToken = async () => {
+  csrfToken.value = await getCsrfToken();
+};
+
+axios.interceptors.request.use(
+  (config) => {
+    if (csrfToken.value && ['post', 'put', 'delete'].includes(config.method ?? '')) {
+      config.headers['X-CSRF-TOKEN'] = csrfToken.value;
     }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
-// Attach Axios to the Vue app instance for global access
+initializeCsrfToken();
+app.provide('csrfToken', csrfToken);
 app.config.globalProperties.$axios = axios;
-
-// Mount the app
 app.mount('#app');

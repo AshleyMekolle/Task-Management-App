@@ -23,7 +23,6 @@ Route::prefix('api')->group(function () {
     Route::resource('tasks', TaskController::class);
 });
 
-// use Illuminate\Support\Facades\Route;
 
 Route::get('/csrf-token', function () {
     return response()->json(['csrf_token' => csrf_token()]);

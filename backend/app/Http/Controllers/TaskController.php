@@ -10,13 +10,13 @@ use App\Http\Requests\TaskRequest;
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the tasks.
+     * Display a list of the tasks.
      */
     public function index(Request $request): JsonResponse
     {
         $query = Task::query();
         
-        // Filter by status if provided
+        // Filter by status 
         if ($request->has('status') && in_array($request->status, ['pending', 'completed'])) {
             $query->where('status', $request->status);
         }
@@ -25,7 +25,6 @@ class TaskController extends Controller
         $perPage = $request->input('per_page', 10);
         $tasks = $query->latest()->paginate($perPage);
         
-        // Return with explicit structure to match frontend expectations
         return response()->json([
             'data' => $tasks->items(),
             'meta' => [
@@ -38,7 +37,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Store a newly created task in storage.
+     * Store a newly created task.
      */
     public function store(TaskRequest $request): JsonResponse
     {
@@ -48,7 +47,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Display the specified task.
+     * Display the task.
      */
     public function show(Task $task): JsonResponse
     {
@@ -56,7 +55,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Update the specified task in storage.
+     * Update the  task.
      */
     public function update(TaskRequest $request, Task $task): JsonResponse
     {
@@ -66,7 +65,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Remove the specified task from storage.
+     * Remove the task from storage.
      */
     public function destroy(Task $task): JsonResponse
     {

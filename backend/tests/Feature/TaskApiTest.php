@@ -15,13 +15,9 @@ class TaskApiTest extends TestCase
      */
     public function test_can_list_tasks(): void
     {
-        // Create some tasks
         Task::factory()->count(5)->create();
-
-        // Make request to list tasks
         $response = $this->getJson('/api/tasks');
 
-        // Assert response
         $response->assertStatus(200)
             ->assertJsonCount(5, 'data')
             ->assertJsonStructure([
