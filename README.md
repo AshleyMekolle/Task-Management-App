@@ -1,10 +1,10 @@
 # Task Management App
 
 ## Overview
-A **Full-Stack Task Management Application** using **Laravel 11 (Backend)** and **Vue  (Frontend)**. It allows users to **create, update, delete, and manage tasks** efficiently.
+A **Full-Stack Task Management Application** using **Laravel 10 (Backend)** and **Vue  (Frontend)**. It allows users to **create, update, delete, and manage tasks** efficiently.
 
 ## Technologies Used
-- **Backend**: Laravel 11
+- **Backend**: Laravel 10
 - **Frontend**: Vue 
 - **Database**: MySQL 
 - **HTTP Client**: Axios
