@@ -25,14 +25,21 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set environment to allow superuser for Composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # Copy only the backend folder contents
 COPY backend/ /var/www/html/
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
 
+# Update Composer dependencies
+RUN composer self-update
+RUN composer update --no-interaction
+
 # Install Composer dependencies
-RUN composer install --no-interaction
+RUN composer install --no-interaction --no-plugins --no-scripts
 
 # Install npm dependencies and build
 RUN npm install
