@@ -9,7 +9,7 @@ import TaskList from './components/TaskList.vue';
 </script>
 
 <style>
-/* Global CSS Reset */
+
 * {
   box-sizing: border-box;
   margin: 0;
