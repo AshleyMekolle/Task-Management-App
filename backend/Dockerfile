@@ -4,11 +4,11 @@ FROM php:8.1-fpm
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies, including oniguruma for mbstring
+# Install system dependencies, including libonig-dev for mbstring
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     zip unzip curl \
-    oniguruma-dev \
+    libonig-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
