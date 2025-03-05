@@ -3,7 +3,8 @@
 return [
     'paths' => ['api/*', 'sanctum/csrf-cookie', 'csrf-token'], 
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['http://localhost:5173'], 
+    'allowed_origins' => ['http://localhost:5173',
+    'https://task-manager-laravel.netlify.app/'], 
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],

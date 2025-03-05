@@ -12,14 +12,14 @@ declare module '@vue/runtime-core' {
 const app: VueApp = createApp(App);
 
 // Configure Axios
-axios.defaults.baseURL = 'http://127.0.0.1:8000/api'; 
+axios.defaults.baseURL = 'https://task-management-app-urw9.onrender.com/'; 
 axios.defaults.withCredentials = true; 
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const getCsrfToken = async (): Promise<string | null> => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/csrf-token');
+    const response = await axios.get('https://task-management-app-urw9.onrender.com/csrf-token');
     return response.data; 
   } catch (error) {
     console.error('Error fetching CSRF token:', error);

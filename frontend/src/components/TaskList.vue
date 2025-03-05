@@ -121,7 +121,7 @@ const showDeleteConfirm = ref(false);
 const taskToDelete = ref(null);
 
 // API base URL
-const apiBaseUrl = 'http://localhost:8000/api';
+const apiBaseUrl = 'https://task-management-app-urw9.onrender.com/';
 
 // Fetch tasks from API
 const fetchTasks = async () => {
