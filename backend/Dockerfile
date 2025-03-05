@@ -34,12 +34,12 @@ COPY backend/ /var/www/html/
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Update Composer dependencies
+# Update Composer and resolve dependencies
 RUN composer self-update
-RUN composer update --no-interaction
+RUN composer update --no-interaction --with-all-dependencies -W
 
 # Install Composer dependencies
-RUN composer install --no-interaction --no-plugins --no-scripts
+RUN composer install --no-interaction
 
 # Install npm dependencies and build
 RUN npm install
