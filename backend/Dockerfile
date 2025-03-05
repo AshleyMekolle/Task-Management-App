@@ -14,10 +14,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nodejs \
-    npm
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    npm \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
@@ -25,25 +23,28 @@ RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy application files
+# Copy application files (COPY only the necessary files, not all files, to avoid unnecessary cache invalidation)
 COPY backend/ /var/www/html/
 
-# Set correct permissions
+# Set correct permissions for the storage and cache directories
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Install PHP dependencies
+# Install PHP dependencies and other necessary steps
 RUN composer install --no-interaction --no-dev --prefer-dist
 
 # Install npm dependencies and build frontend
 RUN npm install
 RUN npm run build
 
-# Setup Laravel application
+# Setup Laravel application environment
 RUN cp .env.example .env
 RUN php artisan key:generate
 
-# Configure Apache
+# Configure Apache to serve from the "public" directory
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+# Enable mod_rewrite for Apache
 RUN a2enmod rewrite
 
 # Expose port 80
