@@ -1,8 +1,7 @@
- 
-# Use an official PHP runtime as a parent image
-FROM php:8.2-cli
+# Use an official PHP runtime with Apache
+FROM php:8.2-apache
 
-# Set working directory
+# Set working directory to the backend folder
 WORKDIR /var/www/html
 
 # Install system dependencies
@@ -26,11 +25,16 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy existing application directory contents
-COPY . /var/www/html
+# Copy only the backend folder contents
+COPY backend/ /var/www/html/
 
-# Install application dependencies
-RUN composer install
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html
+
+# Install Composer dependencies
+RUN composer install --no-interaction
+
+# Install npm dependencies and build
 RUN npm install
 RUN npm run build
 
@@ -38,8 +42,11 @@ RUN npm run build
 RUN cp .env.example .env
 RUN php artisan key:generate
 
-# Expose port 8000
-EXPOSE 8000
+# Configure Apache
+RUN a2enmod rewrite
 
-# Start the application
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Expose port 80
+EXPOSE 80
+
+# Start Apache
+CMD ["apache2-foreground"]
