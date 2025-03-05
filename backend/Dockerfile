@@ -4,7 +4,7 @@ FROM php:8.2-apache
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies
+# Update and install necessary packages
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -15,8 +15,10 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nodejs \
     npm \
-    libpq-dev \  # Install PostgreSQL development libraries
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    libpq-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 
 # Install PHP extensions (Include PostgreSQL extension)
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
