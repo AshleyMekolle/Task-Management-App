@@ -1,7 +1,7 @@
-# Use an official PHP runtime with Apache
+# Use PHP 8.2 with Apache
 FROM php:8.2-apache
 
-# Set working directory to the backend folder
+# Set working directory
 WORKDIR /var/www/html
 
 # Install system dependencies
@@ -20,32 +20,26 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Set environment to allow superuser for Composer
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
-# Copy only the backend folder contents
+# Copy application files
 COPY backend/ /var/www/html/
 
-# Set permissions
+# Set correct permissions
 RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Update Composer and resolve dependencies
-RUN composer self-update
-RUN composer update --no-interaction --with-all-dependencies -W
+# Install PHP dependencies
+RUN composer install --no-interaction --no-dev --prefer-dist
 
-# Install Composer dependencies
-RUN composer install --no-interaction
-
-# Install npm dependencies and build
+# Install npm dependencies and build frontend
 RUN npm install
 RUN npm run build
 
-# Generate application key
+# Setup Laravel application
 RUN cp .env.example .env
 RUN php artisan key:generate
 
