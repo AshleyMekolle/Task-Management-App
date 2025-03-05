@@ -12,7 +12,7 @@ declare module '@vue/runtime-core' {
 const app: VueApp = createApp(App);
 
 // Configure Axios
-axios.defaults.baseURL = 'https://task-management-app-urw9.onrender.com/'; 
+axios.defaults.baseURL = 'https://task-management-app-urw9.onrender.com/api'; 
 axios.defaults.withCredentials = true; 
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['Content-Type'] = 'application/json';

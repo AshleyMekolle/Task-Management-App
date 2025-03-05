@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: laravel-task-app
+    env: php
+    buildCommand: |
+      composer install
+      php artisan key:generate
+      mkdir -p database
+      touch database/database.sqlite
+      php artisan config:clear
+      php artisan migrate --force
+    startCommand: apache2-foreground
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /opt/render/project/database/database.sqlite
