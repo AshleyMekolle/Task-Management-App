@@ -15,9 +15,10 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nodejs \
     npm \
+    libpq-dev \  # Install PostgreSQL development libraries
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions (Include PostgreSQL extension if needed)
+# Install PHP extensions (Include PostgreSQL extension)
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
 
 # Install Composer
